@@ -30,7 +30,7 @@ export default function RepoInput({ repos, setRepos }: Props) {
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder="https://github.com/user/repo"
-          className="flex-1 px-4 py-2 rounded-md text-black outline-none border border-gray-300"
+          className="flex-1 px-4 py-2 rounded-md text-white outline-none border border-gray-300"
         />
 
         <button
