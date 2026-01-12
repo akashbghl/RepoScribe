@@ -1,28 +1,12 @@
-interface ParsedRepoSummary {
-  projectType: string;
-  techStack: string[];
-  mainFolders: string[];
-  detectedFeatures: string[];
-}
-
-interface PromptInput {
-  repoName: string;
-  repoUrl: string;
-  summary: ParsedRepoSummary;
-}
-
-/**
- * Build a structured AI prompt for README generation
- */
 export function buildReadmePrompt({
   repoName,
   repoUrl,
   summary,
-}: PromptInput): string {
+}:any): string {
   return `
-You are a senior software engineer and technical writer.
+You are a senior software engineer and an expert technical writer who creates high-quality, real-world GitHub README files.
 
-Generate a clean, professional README.md in Markdown format.
+Generate a clean, visually appealing, and professional README.md in pure Markdown format.
 
 Project Information:
 - Project Name: ${repoName}
@@ -34,24 +18,50 @@ Project Information:
 
 README must include:
 
-1. Project Overview (clear and concise)
-2. Key Features (bullet points)
-3. Tech Stack
-4. Project Structure (folder explanation)
-5. Installation & Setup
-6. Environment Variables (example)
-7. Running the Project
-8. Future Improvements
-9. Contribution Guidelines
-10. License section
+1. 🧠 Project Overview  
+   - Clear explanation of what the project does  
+   - What problem it solves or value it provides  
+   - High-level architecture or flow (if relevant)
+
+2. 🚀 Key Features  
+   - Bullet points  
+   - Short explanation for important features  
+
+3. 🛠️ Tech Stack  
+   - Categorized list if possible (Frontend, Backend, Tools, etc.)
+
+4. 📂 Project Structure  
+   - Explain important folders based on detected structure  
+
+5. ⚙️ Installation & Setup  
+   - Prerequisites  
+   - Installation steps  
+   - Environment variables example  
+
+6. ▶️ Running the Project  
+   - How to start locally  
+
+7. 🌱 Future Improvements  
+   - Realistic enhancement ideas  
+
+8. 🤝 Contribution Guidelines  
+
+9. 📝 License  
 
 Rules:
-- Use professional tone
-- Use proper markdown headings
-- Avoid emojis
-- Keep instructions realistic
-- Do not hallucinate external services
-- Assume developer audience
-- Output only Markdown content
+- Use professional but friendly tone
+- Make it visually attractive using emojis moderately
+- Use proper markdown headings (#, ##, ###)
+- Do not hallucinate APIs, services, or libraries
+- If something is unknown, clearly state assumptions
+- Keep commands realistic (npm/yarn only if Node detected)
+- Avoid unnecessary verbosity
+- Output only valid Markdown content
+- Do NOT wrap output inside code blocks
+
+Bonus:
+- Add one short single-line credit at the very bottom:
+  "This README was generated using an AI-powered tool."
+
 `;
 }
