@@ -1,5 +1,3 @@
-"use client";
-
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import ReadmePreview from "@/components/ReadmePreview";
