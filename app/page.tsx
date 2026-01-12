@@ -44,6 +44,7 @@ export default function HomePage() {
       });
 
       const data = await res.json();
+      console.log("Analysis API Response:", data);
 
       if (!data.success) {
         throw new Error(data.message || "Analysis failed");
@@ -78,7 +79,7 @@ export default function HomePage() {
 
   return (
     <main className="min-h-screen px-6 py-10 bg-black text-white">
-      <div className="max-w-5xl mx-auto">
+      <div className="max-w-xl mx-auto">
         {/* Header */}
         <h1 className="text-3xl font-bold mb-1">RepoScribe</h1>
         <p className="text-gray-400 mb-8">
