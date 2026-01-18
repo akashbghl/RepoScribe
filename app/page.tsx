@@ -154,25 +154,70 @@ export default function HomePage() {
     <main className="min-h-screen px-6 py-10 bg-black text-white">
       <div className="max-w-xl mx-auto min-h-[70vh]">
         {/* Header */}
-        <h1 className="text-3xl font-bold mb-1">RepoScribe</h1>
-        <p className="text-gray-400 mb-8">
-          Generate professional README files automatically using AI.
-        </p>
+        <div className="relative mb-14 text-center">
+          <div className="absolute inset-0 blur-3xl opacity-30 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500" />
+
+          <h1 className="relative text-5xl font-extrabold tracking-tight bg-gradient-to-r from-indigo-400 to-pink-400 bg-clip-text text-transparent">
+            RepoScribe
+          </h1>
+
+          <p className="relative mt-3 text-gray-400 max-w-xl mx-auto">
+            Instantly generate clean, professional README files using AI-powered
+            repository analysis.
+          </p>
+
+          <div className="relative mt-6 flex justify-center gap-4 text-sm text-gray-400">
+            <span>⚡ Fast</span>
+            <span>🤖 AI Powered</span>
+            <span>📄 Auto Documentation</span>
+          </div>
+        </div>
+
 
         {/* Input */}
         <RepoInput repos={repos} setRepos={setRepos} />
+
+        {!repos.length && !loading && (
+          <div className="mt-14 text-center text-gray-500">
+            <p className="text-lg">No repositories yet</p>
+            <p className="text-sm">Paste a GitHub repo link to begin 🚀</p>
+          </div>
+        )}
+
+        <div className="grid grid-cols-3 gap-4 mt-8">
+          {[
+            { label: "Repositories", value: repos.length },
+            { label: "Processed", value: items.length },
+            { label: "Success", value: items.filter(i => i.status === "success").length }
+          ].map((stat) => (
+            <div
+              key={stat.label}
+              className="rounded-xl bg-white/5 backdrop-blur border border-white/10 p-4 text-center"
+            >
+              <p className="text-xl font-semibold">{stat.value}</p>
+              <p className="text-xs text-gray-400">{stat.label}</p>
+            </div>
+          ))}
+        </div>
+
 
         {/* Action */}
         <button
           disabled={loading}
           onClick={handleGenerate}
-          className="mt-6 px-6 py-3 rounded-lg bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50"
+          className="group relative mt-8 w-full overflow-hidden rounded-xl bg-indigo-600 px-3 py-2 mb-4 font-medium transition-all hover:bg-indigo-700 disabled:opacity-40"
         >
-          {loading ? "Processing..." : "Generate README"}
+          <span className="absolute inset-0 bg-gradient-to-r from-indigo-500 to-purple-600 opacity-0 group-hover:opacity-100 transition" />
+          <span className="relative flex items-center justify-center gap-2">
+            {loading ? "Analyzing..." : "Generate README"}
+            {!loading && <span className="animate-pulse">⚡</span>}
+          </span>
         </button>
 
+
+
         {/* Repo Cards */}
-        <div className="mt-10 space-y-4">
+        <div className="rounded-xl border border-white/10 bg-white/5 backdrop-blur-md shadow-lg hover:shadow-indigo-500/20 transition-all">
           {items.map((item) => (
             <RepoCard
               key={item.url}
@@ -187,7 +232,7 @@ export default function HomePage() {
 
         {/* Preview Modal */}
         {preview && preview.readme && (
-          <div className="fixed inset-0 bg-black/70 flex items-center justify-center p-6 z-50">
+          <div className="fixed inset-0 bg-black/70 flex items-center justify-center p-6 z-50 animate-fadeIn">
             <div className="bg-gray-950 rounded-xl max-w-4xl w-full overflow-hidden">
               <div className="flex justify-between items-center px-4 py-3 border-b border-gray-800">
                 <h3 className="font-semibold">README Preview</h3>
@@ -210,7 +255,7 @@ export default function HomePage() {
         )}
 
       </div>
-      <footer className="border-ali/20 :px-4 mx-auto w-full border-b   border-t  px-2">
+      <footer className="mt-32 border-t border-white/10 bg-gradient-to-b from-black to-gray-950">
         <div className="relative mx-auto grid  max-w-7xl items-center justify-center gap-6 p-10 pb-0 md:flex ">
           <Link href="/">
             <p className="flex items-center justify-center rounded-full  ">
@@ -218,7 +263,7 @@ export default function HomePage() {
             </p>
           </Link>
           <p className="bg-transparent text-center text-xs leading-4 text-gray-400 md:text-left">
-           RepoScribe is an AI-powered tool that automatically generates high-quality README files for GitHub repositories. It analyzes project structure, identifies key components, and creates clear, developer-friendly documentation in seconds. Designed to save time and improve code readability, RepoScribe helps developers maintain consistent and professional documentation across multiple projects.
+            RepoScribe is an AI-powered tool that automatically generates high-quality README files for GitHub repositories. It analyzes project structure, identifies key components, and creates clear, developer-friendly documentation in seconds. Designed to save time and improve code readability, RepoScribe helps developers maintain consistent and professional documentation across multiple projects.
           </p>
         </div>
 

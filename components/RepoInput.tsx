@@ -11,11 +11,32 @@ export default function RepoInput({ repos, setRepos }: Props) {
   const [input, setInput] = useState("");
 
   const addRepo = () => {
-    if (!input.trim()) return;
+    const value = input.trim();
+    if (!value) return;
 
-    setRepos([...repos, input.trim()]);
+    const isValid = (() => {
+      try {
+        const parsed = new URL(value);
+        return parsed.hostname === "github.com";
+      } catch {
+        return false;
+      }
+    })();
+
+    if (!isValid) {
+      alert("Please enter a valid GitHub repository URL");
+      return;
+    }
+
+    if (repos.includes(value)) {
+      alert("This repository is already added");
+      return;
+    }
+
+    setRepos([...repos, value]);
     setInput("");
   };
+
 
   const removeRepo = (index: number) => {
     const updated = [...repos];
