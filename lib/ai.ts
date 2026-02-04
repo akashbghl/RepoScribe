@@ -1,16 +1,17 @@
 import OpenAI from "openai";
 
 const client = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY!,
+  apiKey: process.env.GROQ_API_KEY!,   // 🔁 use Groq key
+  baseURL: "https://api.groq.com/openai/v1", // 🔁 Groq endpoint
 });
 
 /**
- * Generate README using AI
+ * Generate README using AI via Groq
  */
 export async function generateReadme(prompt: string): Promise<string> {
   try {
     const response = await client.chat.completions.create({
-      model: "gpt-4.1-mini",
+      model: "llama-3.3-70b-versatile", // 🔁 Groq model
       temperature: 0.4,
       messages: [
         {
