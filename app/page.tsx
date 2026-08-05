@@ -372,7 +372,7 @@ export default function HomePage() {
             </div>
 
             <div className="rounded-[1.75rem] border border-slate-800 bg-slate-900/80 p-4 text-center shadow-lg shadow-slate-950/20">
-              <p className="text-sm uppercase tracking-[0.3em] text-slate-500">Theme</p>
+              <p className="text-sm uppercase tracking-[0.3em] text-slate-500">`Theme`</p>
               <div className="mt-4 flex items-center justify-center">
                 <ThemeToogle />
               </div>

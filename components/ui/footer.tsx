@@ -11,7 +11,7 @@ function handleScrollTop() {
 }
 
 const Footer = () => {
-  const { setTheme } = useTheme();
+  const { theme, setTheme } = useTheme();
 
   return (
     <div className="flex flex-wrap items-center justify-center gap-4 rounded-lg border border-white/10 bg-white/5 p-3 shadow-[0_20px_50px_-30px_rgba(15,23,42,0.9)] backdrop-blur-xl">
