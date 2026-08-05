@@ -16,50 +16,48 @@ export default function RepoCard({
   onRetry,
 }: RepoCardProps) {
   const statusColor = {
-    idle: "bg-gray-700",
-    processing: "bg-yellow-600",
-    success: "bg-green-600",
-    error: "bg-red-600",
+    idle: "bg-slate-600/80 text-slate-100",
+    processing: "bg-amber-500/90 text-slate-950",
+    success: "bg-emerald-500/90 text-slate-950",
+    error: "bg-rose-500/90 text-slate-950",
   }[status];
 
   return (
-    <div className="w-full max-w-xl bg-gray-900 border border-gray-800 rounded-xl p-4">
-      {/* Repo URL */}
-      <p className="text-sm text-gray-300 truncate">{repoUrl}</p>
+    <div className="w-full rounded-lg border border-white/10 bg-white/5 p-5 shadow-[0_20px_50px_-30px_rgba(15,23,42,0.9)] backdrop-blur-xl transition duration-300 hover:-translate-y-1 hover:shadow-slate-950/40">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="min-w-0">
+          <p className="text-sm font-medium uppercase tracking-[0.24em] text-slate-500">Repository</p>
+          <p className="mt-2 truncate text-base font-semibold text-white">{repoUrl}</p>
+        </div>
 
-      {/* Status */}
-      <div className="flex items-center justify-between mt-3">
-        <span
-          className={`text-xs px-2 py-1 rounded-full text-white ${statusColor}`}
-        >
+        <span className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold ${statusColor}`}>
           {status.toUpperCase()}
         </span>
-
-        <div className="flex gap-2">
-          {status === "success" && (
-            <button
-              onClick={onPreview}
-              className="text-sm px-3 py-1 rounded-md bg-indigo-600 hover:bg-indigo-700"
-            >
-              Preview
-            </button>
-          )}
-
-          {status === "error" && (
-            <button
-              onClick={onRetry}
-              className="text-sm px-3 py-1 rounded-md bg-orange-600 hover:bg-orange-700"
-            >
-              Retry
-            </button>
-          )}
-        </div>
       </div>
 
-      {/* Message */}
       {message && (
-        <p className="mt-2 text-xs text-gray-400">{message}</p>
+        <p className="mt-4 text-sm leading-6 text-slate-400">{message}</p>
       )}
+
+      <div className="mt-5 flex flex-wrap gap-3">
+        {status === "success" && (
+          <button
+            onClick={onPreview}
+            className="rounded-lg bg-slate-950/95 px-4 py-2 text-sm font-semibold text-white transition duration-200 hover:bg-slate-900"
+          >
+            Preview
+          </button>
+        )}
+
+        {status === "error" && (
+          <button
+            onClick={onRetry}
+            className="rounded-lg bg-slate-950/95 px-4 py-2 text-sm font-semibold text-white transition duration-200 hover:bg-slate-900"
+          >
+            Retry
+          </button>
+        )}
+      </div>
     </div>
   );
 }

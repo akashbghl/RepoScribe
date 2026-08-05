@@ -14,29 +14,31 @@ const Footer = () => {
   const { setTheme } = useTheme();
 
   return (
-    <div className="flex items-center justify-center">
-      <div className="flex items-center rounded-full border border-dotted">
-        <button
-          onClick={() => setTheme("light")}
-          className="bg-black mr-3 rounded-full p-2 text-white dark:bg-background dark:text-white"
-        >
-          <DIcons.Sun className="h-5 w-5" strokeWidth={1} />
-          <span className="sr-only">T</span>
-        </button>
+    <div className="flex flex-wrap items-center justify-center gap-4 rounded-lg border border-white/10 bg-white/5 p-3 shadow-[0_20px_50px_-30px_rgba(15,23,42,0.9)] backdrop-blur-xl">
+      <button
+        onClick={() => setTheme("light")}
+        className="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-slate-100 text-slate-950 transition hover:bg-slate-200"
+        aria-label="Light theme"
+      >
+        <DIcons.Sun className="h-5 w-5" strokeWidth={1.5} />
+      </button>
 
-        <button type="button" onClick={handleScrollTop}>
-          <DIcons.ArrowUp className="h-3 w-3" />
-          <span className="sr-only">Top</span>
-        </button>
+      <button
+        onClick={() => setTheme("dark")}
+        className="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-slate-800 text-slate-100 transition hover:bg-slate-700"
+        aria-label="Dark theme"
+      >
+        <DIcons.Moon className="h-5 w-5" strokeWidth={1.5} />
+      </button>
 
-        <button
-          onClick={() => setTheme("dark")}
-          className="dark:bg-black ml-3 rounded-full p-2 text-black dark:text-white"
-        >
-          <DIcons.Moon className="h-5 w-5" strokeWidth={1} />
-          <span className="sr-only">T</span>
-        </button>
-      </div>
+      <button
+        type="button"
+        onClick={handleScrollTop}
+        className="inline-flex h-11 w-11 items-center justify-center rounded-xl border border-slate-700 bg-slate-950 text-slate-100 transition hover:border-slate-400"
+        aria-label="Scroll to top"
+      >
+        <DIcons.ArrowUp className="h-4 w-4" />
+      </button>
     </div>
   );
 };

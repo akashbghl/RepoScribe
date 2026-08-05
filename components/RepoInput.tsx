@@ -37,7 +37,6 @@ export default function RepoInput({ repos, setRepos }: Props) {
     setInput("");
   };
 
-
   const removeRepo = (index: number) => {
     const updated = [...repos];
     updated.splice(index, 1);
@@ -45,35 +44,33 @@ export default function RepoInput({ repos, setRepos }: Props) {
   };
 
   return (
-    <div className="w-full max-w-xl">
-      <div className="flex gap-2">
+    <div className="w-full">
+      <div className="flex flex-col gap-3 rounded-xl border border-white/10 bg-white/5 p-4 shadow-[0_20px_50px_-30px_rgba(15,23,42,0.9)] backdrop-blur-xl sm:flex-row">
         <input
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder="https://github.com/user/repo"
-          className="flex-1 px-4 py-2 rounded-md text-white outline-none border border-gray-300"
+          className="w-full rounded-xl border border-white/10 bg-slate-950/70 px-4 py-3 text-sm text-slate-100 outline-none transition focus:border-slate-400 focus:ring-2 focus:ring-slate-500/30"
         />
 
         <button
           onClick={addRepo}
-          className="px-4 py-2 bg-green-600 rounded-md hover:bg-green-700"
+          className="inline-flex items-center justify-center rounded-xl bg-slate-100 px-6 py-3 text-sm font-semibold text-slate-950 transition hover:bg-slate-200"
         >
-          Add
+          Add repository
         </button>
       </div>
 
-      {/* Repo List */}
-      <div className="mt-4 space-y-2">
+      <div className="mt-4 space-y-3">
         {repos.map((repo, index) => (
           <div
             key={index}
-            className="flex justify-between items-center bg-gray-800 px-3 py-2 rounded-md"
+            className="flex flex-col gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-3 shadow-[0_20px_50px_-30px_rgba(15,23,42,0.9)] sm:flex-row sm:items-center sm:justify-between"
           >
-            <span className="text-sm truncate">{repo}</span>
-
+            <span className="text-sm text-slate-100 truncate">{repo}</span>
             <button
               onClick={() => removeRepo(index)}
-              className="text-red-400 hover:text-red-500"
+              className="rounded-xl border border-slate-700 px-3 py-2 text-xs text-slate-100 transition hover:border-slate-400 hover:text-white"
             >
               Remove
             </button>

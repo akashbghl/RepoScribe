@@ -2,11 +2,9 @@
 
 import { useState } from "react";
 import RepoInput from "@/components/RepoInput";
-import RepoCard from "@/components/RepoCard";
 import ReadmePreview from "@/components/ReadmePreview";
 import Link from "next/link";
 import { DIcons } from "dicons";
-
 
 import ThemeToogle from "@/components/ui/footer";
 
@@ -19,82 +17,33 @@ interface RepoItem {
   readme?: string;
 }
 
-const navigation = {
-  categories: [
-    {
-      id: "women",
-      name: "Women",
-
-      sections: [
-        {
-          id: "about",
-          name: "About",
-          items: [
-            { name: "About", href: "/about" },
-            { name: "Works", href: "/agency/works" },
-            { name: "Pricing", href: "/pricing" },
-          ],
-        },
-        {
-          id: "features",
-          name: "Features",
-          items: [
-            { name: "Products", href: "/products" },
-            { name: "Agency", href: "/agency" },
-            { name: "Dashboard", href: "/dashboard" },
-          ],
-        },
-        {
-          id: "products",
-          name: "Products",
-          items: [
-            { name: "DIcons", href: "/products/dicons" },
-            { name: "DShapes", href: "/products/dshapes" },
-            { name: "Graaadients", href: "/products/graaadients" },
-          ],
-        },
-        {
-          id: "designs",
-          name: "Designs",
-          items: [
-            { name: "Design", href: "/designs" },
-            { name: "Components", href: "/components" },
-            { name: "Blogs", href: "/blogs" },
-          ],
-        },
-        {
-          id: "other",
-          name: "Others",
-          items: [
-            { name: "Graphic", href: "/graphic" },
-            { name: "3D Icons", href: "/products/3dicons" },
-            { name: "Colors", href: "/products/colors/generate" },
-          ],
-        },
-        {
-          id: "company",
-          name: "Company",
-          items: [
-            { name: "Contact", href: "/contact" },
-            { name: "Terms", href: "/terms" },
-            { name: "Privacy", href: "/privacy" },
-          ],
-        },
-      ],
-    },
-  ],
-};
-
-const Underline = `hover:-translate-y-1 border rounded-xl p-2.5 transition-transform `;
+const highlights = [
+  {
+    title: "Smart repository understanding",
+    description:
+      "Scan directories, package files, and docs to identify the most important project information.",
+  },
+  {
+    title: "Professional README output",
+    description:
+      "Generate a clean, shareable README with usage, setup, and feature guidance automatically.",
+  },
+  {
+    title: "Minimal setup required",
+    description:
+      "Keep the backend logic unchanged while enjoying a modern interface and faster workflow.",
+  },
+];
 
 export default function HomePage() {
   const [repos, setRepos] = useState<string[]>([]);
   const [items, setItems] = useState<RepoItem[]>([]);
   const [preview, setPreview] = useState<RepoItem | null>(null);
+  const [showResultsModal, setShowResultsModal] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const handleGenerate = async () => {
-    if (!repos.length) {
+  const generate = async (reposToGenerate: string[] = repos) => {
+    if (!reposToGenerate.length) {
       alert("Please add at least one repository URL");
       return;
     }
@@ -102,7 +51,7 @@ export default function HomePage() {
     setLoading(true);
 
     // Initialize cards
-    const initialItems: RepoItem[] = repos.map((url) => ({
+    const initialItems: RepoItem[] = reposToGenerate.map((url) => ({
       url,
       status: "processing",
       message: "Analyzing repository...",
@@ -113,7 +62,7 @@ export default function HomePage() {
       const res = await fetch("/api/analyze", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ repos }),
+        body: JSON.stringify({ repos: reposToGenerate }),
       });
 
       const data = await res.json();
@@ -133,6 +82,7 @@ export default function HomePage() {
       }));
 
       setItems(updated);
+      setShowResultsModal(true);
     } catch (error: any) {
       console.error(error);
       alert("Something went wrong while generating README");
@@ -141,277 +91,297 @@ export default function HomePage() {
     }
   };
 
+  const handleGenerate = async () => {
+    await generate();
+  };
+
   const handlePreview = (item: RepoItem) => {
     setPreview(item);
   };
 
   const handleRetry = (url: string) => {
     setRepos([url]);
-    handleGenerate();
+    generate([url]);
+  };
+
+  const closeResultsModal = () => {
+    setShowResultsModal(false);
   };
 
   return (
-    <main className="min-h-screen px-6 py-10 bg-black text-white">
-      <div className="max-w-xl mx-auto min-h-[70vh]">
-        {/* Header */}
-        <div className="relative mb-14 text-center">
-          <div className="absolute inset-0 blur-3xl opacity-30 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500" />
+    <main className="min-h-screen bg-background text-foreground">
+      <div className="relative overflow-hidden pb-16">
+        <div className="absolute inset-x-0 top-0 h-112 bg-linear-to-b from-slate-900 via-slate-950 to-transparent opacity-95" />
+        <div className="absolute right-0 top-24 hidden h-72 w-72 rounded-full bg-cyan-500/10 blur-3xl lg:block" />
+        <div className="absolute left-0 top-44 hidden h-64 w-64 rounded-full bg-violet-500/10 blur-3xl lg:block" />
 
-          <h1 className="relative text-5xl font-extrabold tracking-tight bg-gradient-to-r from-indigo-400 to-pink-400 bg-clip-text text-transparent">
-            RepoScribe
-          </h1>
+        <div className="relative mx-auto max-w-7xl px-6 pt-12 sm:px-8 lg:px-10 lg:pt-20">
+          <div className="grid gap-10 lg:grid-cols-[1.6fr_1fr] items-start">
+            <section className="space-y-8">
+              <div className="space-y-5">
+                <div className="inline-flex rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-xs uppercase tracking-[0.3em] text-slate-400 shadow-sm shadow-slate-950/10">
+                  Professional README generation
+                </div>
+                <h1 className="max-w-3xl text-5xl font-semibold tracking-tight text-white sm:text-6xl">
+                  Convert GitHub repositories into elegant README files fast.
+                </h1>
+                <p className="max-w-2xl text-lg leading-8 text-slate-300">
+                  Add repository links, generate documentation, and review outputs in a focused popup. The backend remains intact while the interface is clean, minimal, and polished.
+                </p>
+              </div>
 
-          <p className="relative mt-3 text-gray-400 max-w-xl mx-auto">
-            Instantly generate clean, professional README files using AI-powered
-            repository analysis.
-          </p>
-
-          <div className="relative mt-6 flex justify-center gap-4 text-sm text-gray-400">
-            <span>⚡ Fast</span>
-            <span>🤖 AI Powered</span>
-            <span>📄 Auto Documentation</span>
-          </div>
-        </div>
-
-
-        {/* Input */}
-        <RepoInput repos={repos} setRepos={setRepos} />
-
-        {!repos.length && !loading && (
-          <div className="mt-14 text-center text-gray-500">
-            <p className="text-lg">No repositories yet</p>
-            <p className="text-sm">Paste a GitHub repo link to begin 🚀</p>
-          </div>
-        )}
-
-        <div className="grid grid-cols-3 gap-4 mt-8">
-          {[
-            { label: "Repositories", value: repos.length },
-            { label: "Processed", value: items.length },
-            { label: "Success", value: items.filter(i => i.status === "success").length }
-          ].map((stat) => (
-            <div
-              key={stat.label}
-              className="rounded-xl bg-white/5 backdrop-blur border border-white/10 p-4 text-center"
-            >
-              <p className="text-xl font-semibold">{stat.value}</p>
-              <p className="text-xs text-gray-400">{stat.label}</p>
-            </div>
-          ))}
-        </div>
-
-
-        {/* Action */}
-        <button
-          disabled={loading}
-          onClick={handleGenerate}
-          className="group relative mt-8 w-full overflow-hidden rounded-xl bg-indigo-600 px-3 py-2 mb-4 font-medium transition-all hover:bg-indigo-700 disabled:opacity-40"
-        >
-          <span className="absolute inset-0 bg-gradient-to-r from-indigo-500 to-purple-600 opacity-0 group-hover:opacity-100 transition" />
-          <span className="relative flex items-center justify-center gap-2">
-            {loading ? "Analyzing..." : "Generate README"}
-            {!loading && <span className="animate-pulse">⚡</span>}
-          </span>
-        </button>
-
-
-
-        {/* Repo Cards */}
-        <div className="rounded-xl border border-white/10 bg-white/5 backdrop-blur-md shadow-lg hover:shadow-indigo-500/20 transition-all">
-          {items.map((item) => (
-            <RepoCard
-              key={item.url}
-              repoUrl={item.url}
-              status={item.status}
-              message={item.message}
-              onPreview={() => handlePreview(item)}
-              onRetry={() => handleRetry(item.url)}
-            />
-          ))}
-        </div>
-
-        {/* Preview Modal */}
-        {preview && preview.readme && (
-          <div className="fixed inset-0 bg-black/70 flex items-center justify-center p-6 z-50 animate-fadeIn">
-            <div className="bg-gray-950 rounded-xl max-w-4xl w-full overflow-hidden">
-              <div className="flex justify-between items-center px-4 py-3 border-b border-gray-800">
-                <h3 className="font-semibold">README Preview</h3>
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
                 <button
-                  onClick={() => setPreview(null)}
-                  className="text-sm text-red-400 hover:text-red-500"
+                  onClick={handleGenerate}
+                  disabled={loading || repos.length === 0}
+                  className="inline-flex items-center justify-center gap-2 rounded-lg bg-slate-100 px-7 py-3 text-base font-semibold text-slate-950 transition duration-300 hover:bg-slate-200 disabled:cursor-not-allowed disabled:opacity-50"
                 >
-                  Close
+                  {loading ? "Analyzing..." : "Generate README"}
+                  {!loading && <span className="text-slate-500">›</span>}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowResultsModal(true)}
+                  disabled={!items.length}
+                  className="rounded-lg border border-border bg-card px-5 py-3 text-sm font-semibold text-card-foreground transition hover:bg-popover disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  Open results popup
                 </button>
               </div>
 
-              <div className="p-4">
-                <ReadmePreview
-                  content={preview.readme}
-                  repoName="README"
-                />
-              </div>
-            </div>
-          </div>
-        )}
-
-      </div>
-      <footer className="mt-32 border-t border-white/10 bg-gradient-to-b from-black to-gray-950">
-        <div className="relative mx-auto grid  max-w-7xl items-center justify-center gap-6 p-10 pb-0 md:flex ">
-          <Link href="/">
-            <p className="flex items-center justify-center rounded-full  ">
-              <DIcons.Designali className="w-8 text-red-600" />
-            </p>
-          </Link>
-          <p className="bg-transparent text-center text-xs leading-4 text-gray-400 md:text-left">
-            RepoScribe is an AI-powered tool that automatically generates high-quality README files for GitHub repositories. It analyzes project structure, identifies key components, and creates clear, developer-friendly documentation in seconds. Designed to save time and improve code readability, RepoScribe helps developers maintain consistent and professional documentation across multiple projects.
-          </p>
-        </div>
-
-        <div className="mx-auto max-w-7xl px-6 py-10">
-          <div className="border-b border-dotted"> </div>
-          <div className="py-10">
-            {navigation.categories.map((category) => (
-              <div
-                key={category.name}
-                className="grid grid-cols-3 flex-row justify-between gap-6 leading-6 md:flex"
-              >
-                {category.sections.map((section) => (
-                  <div key={section.name}>
-                    <ul
-                      role="list"
-                      aria-labelledby={`${category.id}-${section.id}-heading-mobile`}
-                      className="flex flex-col space-y-2"
-                    >
-                      {section.items.map((item) => (
-                        <li key={item.name} className="flow-root">
-                          <Link
-                            href={item.href}
-                            className="text-sm text-slate-600 hover:text-black dark:text-slate-400 hover:dark:text-white md:text-xs"
-                          >
-                            {item.name}
-                          </Link>
-                        </li>
-                      ))}
-                    </ul>
+              <div className="grid gap-4 sm:grid-cols-3">
+                {[
+                  { label: "Repositories", value: repos.length },
+                  { label: "Processed", value: items.length },
+                  { label: "Success", value: items.filter((i) => i.status === "success").length },
+                ].map((stat) => (
+                  <div
+                    key={stat.label}
+                    className="rounded-lg border border-border bg-card p-6 shadow-[0_20px_50px_-30px_rgba(15,23,42,0.9)]"
+                  >
+                    <p className="text-3xl font-semibold text-card-foreground">{stat.value}</p>
+                    <p className="mt-2 text-sm uppercase tracking-[0.3em] text-slate-500">{stat.label}</p>
                   </div>
                 ))}
               </div>
+            </section>
+
+            <aside className="rounded-lg border border-border bg-card p-8 shadow-[0_20px_50px_-30px_rgba(15,23,42,0.9)]">
+              <div className="space-y-5">
+                <div className="space-y-2">
+                  <p className="text-sm uppercase tracking-[0.3em] text-cyan-300">Quick start</p>
+                  <h2 className="text-2xl font-semibold text-white">Paste your GitHub repo link below</h2>
+                </div>
+                <RepoInput repos={repos} setRepos={setRepos} />
+                <div className="rounded-xl border border-slate-800 bg-slate-950/90 p-4">
+                  <p className="text-sm uppercase tracking-[0.3em] text-slate-500">Example repositories</p>
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    <span className="rounded-full border border-slate-800 bg-slate-900/80 px-3 py-2 text-xs text-slate-300">
+                      github.com/vercel/next.js
+                    </span>
+                    <span className="rounded-full border border-slate-800 bg-slate-900/80 px-3 py-2 text-xs text-slate-300">
+                      github.com/facebook/react
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        </div>
+      </div>
+
+      <section className="mx-auto max-w-7xl px-6 pb-16 sm:px-8 lg:px-10">
+        <div className="grid gap-6 lg:grid-cols-3">
+          {highlights.map((item) => (
+            <div
+              key={item.title}
+              className="rounded-xl border border-border bg-card p-6 shadow-[0_20px_50px_-30px_rgba(15,23,42,0.9)] transition duration-300 hover:-translate-y-1"
+            >
+              <p className="text-sm uppercase tracking-[0.3em] text-slate-400">Feature</p>
+              <h3 className="mt-4 text-xl font-semibold text-card-foreground">{item.title}</h3>
+              <p className="mt-3 text-sm leading-6 text-slate-300">{item.description}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section id="results" className="mx-auto max-w-7xl px-6 pb-20 sm:px-8 lg:px-10">
+        <div className="rounded-lg border border-border bg-card p-6 shadow-[0_20px_50px_-30px_rgba(15,23,42,0.9)]">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <p className="text-sm uppercase tracking-[0.3em] text-slate-400">Results</p>
+              <h2 className="mt-2 text-3xl font-semibold text-card-foreground">Analysis summary</h2>
+            </div>
+            <p className="max-w-xl text-sm text-slate-300">
+              Generate documentation once, then open the popup to inspect and preview results.
+            </p>
+          </div>
+
+          <div className="mt-8 grid gap-4 sm:grid-cols-3">
+            {[
+              { label: "Repositories", value: repos.length },
+              { label: "Processed", value: items.length },
+              { label: "Success", value: items.filter((i) => i.status === "success").length },
+            ].map((stat) => (
+              <div key={stat.label} className="rounded-lg border border-border bg-popover px-5 py-4">
+                <p className="text-3xl font-semibold text-card-foreground">{stat.value}</p>
+                <p className="mt-2 text-sm uppercase tracking-[0.3em] text-slate-400">{stat.label}</p>
+              </div>
             ))}
           </div>
-          <div className="border-b border-dotted"> </div>
-        </div>
 
-        <div className="flex flex-wrap justify-center gap-y-6">
-          <div className="flex flex-wrap items-center justify-center gap-6 gap-y-4 px-6">
-            <Link
-              aria-label="Logo"
-              href="mailto:contact@designali.in"
-              rel="noreferrer"
-              target="_blank"
-              className={Underline}
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <button
+              type="button"
+              onClick={() => setShowResultsModal(true)}
+              disabled={!items.length}
+              className="inline-flex items-center justify-center rounded-lg border border-border bg-card px-6 py-3 text-sm font-semibold text-card-foreground transition hover:bg-popover disabled:cursor-not-allowed disabled:opacity-50"
             >
-              <DIcons.Mail strokeWidth={1.5} className="h-5 w-5" />
-            </Link>
-            <Link
-              aria-label="Logo"
-              href="https://x.com/designali_in"
-              rel="noreferrer"
-              target="_blank"
-              className={Underline}
-            >
-              <DIcons.X className="h-5 w-5" />
-            </Link>
-            <Link
-              aria-label="Logo"
-              href="https://www.instagram.com/designali.in/"
-              rel="noreferrer"
-              target="_blank"
-              className={Underline}
-            >
-              <DIcons.Instagram className="h-5 w-5" />
-            </Link>
-            <Link
-              aria-label="Logo"
-              href="https://www.threads.net/designali.in"
-              rel="noreferrer"
-              target="_blank"
-              className={Underline}
-            >
-              <DIcons.Threads className="h-5 w-5" />
-            </Link>
-            <Link
-              aria-label="Logo"
-              href="https://chat.whatsapp.com/LWsNPcz5BlWDVOha41vzuh"
-              rel="noreferrer"
-              target="_blank"
-              className={Underline}
-            >
-              <DIcons.WhatsApp className="h-5 w-5" />
-            </Link>
-            <Link
-              aria-label="Logo"
-              href="https://www.behance.net/designali-in"
-              rel="noreferrer"
-              target="_blank"
-              className={Underline}
-            >
-              <DIcons.Behance className="h-5 w-5" />
-            </Link>
-            <Link
-              aria-label="Logo"
-              href="https://www.facebook.com/designali.agency"
-              rel="noreferrer"
-              target="_blank"
-              className={Underline}
-            >
-              <DIcons.Facebook className="h-5 w-5" />
-            </Link>
-            <Link
-              aria-label="Logo"
-              href="https://www.linkedin.com/company/designali"
-              rel="noreferrer"
-              target="_blank"
-              className={Underline}
-            >
-              <DIcons.LinkedIn className="h-5 w-5" />
-            </Link>
-            <Link
-              aria-label="Logo"
-              href="https://www.youtube.com/@designali-in"
-              rel="noreferrer"
-              target="_blank"
-              className={Underline}
-            >
-              <DIcons.YouTube className="h-5 w-5" />
-            </Link>
+              Open results popup
+            </button>
+            <p className="text-sm text-slate-400">Results appear in a clean modal for focused review.</p>
           </div>
-          <ThemeToogle />
         </div>
+      </section>
 
-        <div className="mx-auto mb-10 mt-10 flex flex-col justify-between text-center text-xs md:max-w-7xl">
-          <div className="flex flex-row items-center justify-center gap-1 text-slate-600 dark:text-slate-400">
-            <span> © </span>
-            <span>{new Date().getFullYear()}</span>
-            <span>Made with</span>
-            <DIcons.Heart className="text-red-600 mx-1 h-4 w-4 animate-pulse" />
-            <span> by </span>
-            <span className="hover:text-ali dark:hover:text-ali cursor-pointer text-gray-400 dark:text-white">
-              <Link
-                aria-label="Logo"
-                className="font-bold"
-                href="https://www.instagram.com/aliimam.in/"
-                target="_blank"
+      {showResultsModal && items.length > 0 && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[rgba(2,6,23,0.85)] p-6 backdrop-blur-sm">
+          <div className="w-full max-w-4xl overflow-hidden rounded-lg border border-border bg-card shadow-2xl shadow-black/40">
+            <div className="flex flex-col gap-4 border-b border-border bg-popover px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <p className="text-sm uppercase tracking-[0.3em] text-slate-400">Results popup</p>
+                <h3 className="text-xl font-semibold text-card-foreground">Generated README report</h3>
+              </div>
+              <button
+                onClick={closeResultsModal}
+                className="inline-flex items-center justify-center rounded-lg border border-border bg-card px-4 py-2 text-sm font-semibold text-card-foreground transition hover:border-slate-400 hover:text-white"
               >
-                Akash Baghel {""}
-              </Link>
-            </span>
-            -
-            <span className="hover:text-ali dark:hover:text-red-600 cursor-pointer text-slate-600 dark:text-slate-400">
-              <Link aria-label="Logo" className="" href="/">
-                RepoScribe
-              </Link>
-            </span>
+                Close
+              </button>
+            </div>
+            <div className="space-y-4 p-6">
+              {items.map((item) => (
+                <div key={item.url} className="rounded-2xl border border-border bg-popover p-4">
+                  <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-sm text-slate-400">{item.url}</p>
+                      <p className="mt-1 text-lg font-semibold text-card-foreground">
+                        {item.status === "success" ? "Ready to review" : "Error generating README"}
+                      </p>
+                      <p className="mt-2 text-sm leading-6 text-slate-300">{item.message}</p>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      {item.readme && (
+                        <button
+                          type="button"
+                          onClick={() => handlePreview(item)}
+                          className="cursor-pointer inline-flex items-center justify-center rounded-lg border border-border bg-card px-4 py-2 text-sm font-semibold text-card-foreground transition hover:bg-popover"
+                        >
+                          Preview
+                        </button>
+                      )}
+                      {item.status === "error" && (
+                        <button
+                          type="button"
+                          onClick={() => handleRetry(item.url)}
+                          className="cursor-pointer inline-flex items-center justify-center rounded-lg border border-border bg-transparent px-4 py-2 text-sm font-semibold text-slate-200 transition hover:border-slate-400 hover:text-white"
+                        >
+                          Retry
+                      </button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
+        </div>
+      )}
+
+      {preview && preview.readme && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[rgba(2,6,23,0.95)] p-6 backdrop-blur-sm">
+          <div className="w-full max-w-5xl overflow-hidden rounded-lg border border-border bg-card shadow-2xl shadow-black/40">
+            <div className="flex flex-col gap-4 border-b border-border bg-popover px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <p className="text-sm uppercase tracking-[0.3em] text-slate-400">Preview</p>
+                <h3 className="text-xl font-semibold text-card-foreground">Generated README</h3>
+              </div>
+              <button
+                onClick={() => setPreview(null)}
+                className="inline-flex items-center justify-center rounded-lg border border-border bg-card px-4 py-2 text-sm font-semibold text-card-foreground transition hover:border-slate-400 hover:text-white"
+              >
+                Close
+              </button>
+            </div>
+            <div className="p-6">
+              <ReadmePreview content={preview.readme} repoName="README" />
+            </div>
+          </div>
+        </div>
+      )}
+
+      <footer className="border-t border-border bg-background py-10">
+        <div className="mx-auto flex max-w-7xl flex-col gap-10 px-6 sm:px-8 lg:flex-row lg:items-start lg:justify-between">
+          <div className="space-y-4">
+            <div className="flex items-center gap-3">
+              <div className="flex h-12 w-12 items-center justify-center rounded-3xl bg-linear-to-br from-violet-500 to-cyan-500 text-white shadow-lg shadow-cyan-500/10">
+                <DIcons.Designali className="h-6 w-6" />
+              </div>
+              <div>
+                <p className="text-xl font-semibold text-white">RepoScribe</p>
+                <p className="text-sm text-slate-400">AI-generated README creation with a modern interface.</p>
+              </div>
+            </div>
+            <p className="max-w-md text-sm leading-6 text-slate-400">
+              Generate polished documentation quickly with the same backend logic, a cleaner user experience, and subtle motion throughout the interface.
+            </p>
+          </div>
+
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <div>
+              <p className="text-sm uppercase tracking-[0.3em] text-slate-500">Links</p>
+              <ul className="mt-4 space-y-3 text-sm text-slate-300">
+                <li>
+                  <Link href="#results" className="transition hover:text-white">
+                    Results
+                  </Link>
+                </li>
+                <li>
+                  <Link href="#" className="transition hover:text-white">
+                    Privacy
+                  </Link>
+                </li>
+                <li>
+                  <Link href="#" className="transition hover:text-white">
+                    Contact
+                  </Link>
+                </li>
+              </ul>
+            </div>
+
+            <div>
+              <p className="text-sm uppercase tracking-[0.3em] text-slate-500">Connect</p>
+              <div className="mt-4 flex flex-wrap gap-3">
+                <a href="mailto:contact@designali.in" className="rounded-2xl border border-slate-800 bg-slate-900/80 px-3 py-2 text-xs text-slate-300 transition hover:border-cyan-400 hover:text-white">
+                  Email
+                </a>
+                <a href="https://github.com" target="_blank" rel="noreferrer" className="rounded-2xl border border-slate-800 bg-slate-900/80 px-3 py-2 text-xs text-slate-300 transition hover:border-cyan-400 hover:text-white">
+                  GitHub
+                </a>
+              </div>
+            </div>
+
+            <div className="rounded-[1.75rem] border border-slate-800 bg-slate-900/80 p-4 text-center shadow-lg shadow-slate-950/20">
+              <p className="text-sm uppercase tracking-[0.3em] text-slate-500">Theme</p>
+              <div className="mt-4 flex items-center justify-center">
+                <ThemeToogle />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="mx-auto mt-10 max-w-7xl px-6 text-center text-sm text-slate-500 sm:px-8">
+          © {new Date().getFullYear()} RepoScribe. Built with AI and modern UI design.
         </div>
       </footer>
     </main>

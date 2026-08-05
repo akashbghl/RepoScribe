@@ -30,30 +30,31 @@ export default function ReadmePreview({
   };
 
   return (
-    <div className="w-full bg-gray-900 border border-gray-800 rounded-xl overflow-hidden">
-      {/* Header */}
-      <div className="flex items-center justify-between px-4 py-3 bg-gray-800">
-        <h3 className="font-semibold text-white">README Preview</h3>
+    <div className="w-full rounded-lg border border-white/10 bg-white/5 shadow-[0_20px_50px_-30px_rgba(15,23,42,0.9)] backdrop-blur-xl">
+      <div className="flex flex-col gap-4 border-b border-white/10 bg-slate-900/95 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h3 className="text-lg font-semibold text-white">README Preview</h3>
+          <p className="text-sm text-slate-400">Copy or download the generated markdown file.</p>
+        </div>
 
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-3">
           <button
             onClick={copyToClipboard}
-            className="text-sm px-3 py-1 rounded-md bg-indigo-600 hover:bg-indigo-700"
+            className="rounded-lg bg-slate-950/95 px-4 py-2 text-sm font-semibold text-white transition duration-200 hover:bg-slate-900"
           >
             Copy
           </button>
 
           <button
             onClick={downloadReadme}
-            className="text-sm px-3 py-1 rounded-md bg-green-600 hover:bg-green-700"
+            className="rounded-lg bg-slate-950/95 px-4 py-2 text-sm font-semibold text-white transition duration-200 hover:bg-slate-900"
           >
             Download
           </button>
         </div>
       </div>
 
-      {/* Markdown Body */}
-      <div className="prose prose-invert max-w-none p-5 overflow-y-auto max-h-[70vh]">
+      <div className="prose prose-invert max-w-none p-6 overflow-y-auto max-h-[72vh]">
         <ReactMarkdown>{content}</ReactMarkdown>
       </div>
     </div>
